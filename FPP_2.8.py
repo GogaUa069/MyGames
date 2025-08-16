@@ -1,4 +1,3 @@
-# Color text
 # Get adventure LVL6 in uncommon levels
 # Get one func for searching numbers *answers
 # Change the HARD LVL
@@ -9,7 +8,7 @@ from time import sleep
 
 
 class Monologues:
-    how_to_play_info = ("How to play:",
+    how_to_play_info = ("\n@GogaUa096 Follow me on instagram :)\n\nHow to play:",
                         Fore.BLUE + "Task: To find the number guessed by the computer.",
                         "1. Enter the range in which you will search for the number. (The range 5-100)",
                         "2. Then, start find number." + Style.RESET_ALL,
@@ -17,21 +16,26 @@ class Monologues:
     types_of_levels = {"LVL1: LITE": "You've unlimited lives! Good way for beginners.",
                        "LVL2: MEDIUM": "The number of lives is set of depending on the size of the range. "
                                        "Suitable for average players.",
-                       "LVL3: HARD": "You've 6 lives and border is 100. Only for advanced players!",
+                       "LVL3: HARD": "Medium level, but with... TIME! You have only 30 seconds! Only for advanced players!",
                        "LVL4: MEGA": "There are 2 numbers! Unlocks after 3 wins at LVL3.",
-                       "LVL5: RANDOM": "Random number of lives, border and amount of hidden numbers! "
+                       "LVL5: RANDOM": "Random number of lives, border and time for finding! "
                                        "If you win this mode, you can consider yourself a PRO!, ",
-                       "LVL6: ADVENTURE": "Coming soon!\n"}
+                       "LVL6: ADVENTURE": "Win all the COMMON levels in a row and get prize!\n"}
 
     @staticmethod
     def long_get_info(text):
-        print(Fore.BLUE + "Common levels:" + Style.RESET_ALL)
-        for key, value in list(text.items())[:3]:
-            print(f"{key} - {value}")
+        list_items = list(text.items())
+        print(Fore.LIGHTBLUE_EX + "Common levels:" + Style.RESET_ALL)
+        for key, value in list_items[:3]:
+            print(key, value, sep=" - ")
             sleep(0.7)
-        print(Fore.GREEN + "\nUncommon levels:" + Style.RESET_ALL)
-        for key, value in list(text.items())[3:]:
-            print(f"{key} - {value}")
+        print(Fore.LIGHTGREEN_EX + "\nUncommon levels:" + Style.RESET_ALL)
+        for key, value in list_items[3:5]:
+            print(key, value, sep=" - ")
+            sleep(0.7)
+        print(Fore.LIGHTYELLOW_EX + "\nLegendary levels:" + Style.RESET_ALL)
+        for key, value in list_items[5:]:
+            print(key, value, sep=" - ")
             sleep(0.7)
 
     @staticmethod
@@ -52,6 +56,7 @@ class GetData:
         self.difficulty_lvl = str
         self.last_game = None
         self.win_streak = 0
+        self._is_used_promo = False
 
     def get_difficulty_lvl(self):
         acceptable_types = list()
@@ -85,8 +90,11 @@ class GetData:
                     print("Coming soon!\n")  # <----------------------- Add Random LVl
                 case "adventure" | "6":
                     print("Coming soon!\n")  # <------------------------- Add Adventure LVL
+                case "mswde096" | "096":
+                    print(Fore.LIGHTRED_EX + "Yey! You used promo-code! Now You have +10.000 lives!" + Style.RESET_ALL)
+                    self._is_used_promo = True
                 case _:
-                    print(f"Please, use: {Fore.RED + ", ".join(acceptable_types).upper() + Style.RESET_ALL}\n"
+                    print(f"Please, use: {Fore.LIGHTRED_EX + ", ".join(acceptable_types).upper() + Style.RESET_ALL}\n"
                           f"Or enter number in range 1-6\n")
 
     def is_mega_unlocked(self):
@@ -154,6 +162,8 @@ class MediumGame(GetData):
     def __init__(self):
         self._border = self._hidden_number = self._number = self._attempts_counter = self._attempts_limit = 0
         GetData.__init__(self)
+        if self._is_used_promo:
+            self._attempts_limit += 10000
 
     def get_border(self):
         print("Select the border.\nEnter total in range 5-100\n")
@@ -231,7 +241,7 @@ class HardGame(GetData):
         global win_streak
         print("Well, lets find the hidden number!\n"
               "Enter total in range 1-100\n"
-              "Be careful, you have only 6 lives!\n")
+              "\n(Be careful, you have only 30 seconds!)\n")
         self._hidden_number = randint(1, self.__border)
 
         while True:
@@ -292,7 +302,8 @@ def medium_game_func():
     print(Fore.RED + "Medium Level:" + Style.RESET_ALL)
     my_medium_game = MediumGame()
     my_medium_game.get_border()
-    my_medium_game.get_attempts_limit()
+    if not data1._is_used_promo:
+        my_medium_game.get_attempts_limit()
     my_medium_game.number_searching()
 
 
@@ -326,7 +337,7 @@ def restart():
             case "another" | "2":
                 game_starting()
             case "leave" | "3":
-                print("Goodbye!")
+                print(Fore.BLUE + "Goodbye!")
                 sleep(0.5)
                 break
             case _:
